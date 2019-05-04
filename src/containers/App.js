@@ -2,10 +2,9 @@
 
 import React, {Component} from 'react';
 import classes from './App.css';
-import Person from './Person/Person.js'
-import Validation from "./Validation/Validation";
-import Char from "./Char/Char";
-import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
+
+import Persons from "../components/Persons/Persons";
+import Cockpit from "../components/Cockpit/Cockpit";
 
 
 class App extends Component {
@@ -66,66 +65,28 @@ class App extends Component {
     render() {
 
         let persons = null;
-        let btnClass = null;
 
         console.log(this.state.showPersons);
 
         if (this.state.showPersons === true) {
-            persons = (
-                <div>
-                    {this.state.persons.map((person, index) => {
-                        return (
-                        <ErrorBoundary key={person.id}>
-                            <Person
-                                click={() => this.deletePersonHandler(index)}
-                                name={person.name}
-                                age={person.age}
-                                changed={(event) => this.nameChangedHandler(event, person.id)}
-                            />
-                        </ErrorBoundary>
-                        )
-                    })}
-                </div>
-            );
-
-            btnClass = classes.Red;
-
+            persons = <Persons
+                persons={this.state.persons}
+                clicked={this.deletePersonHandler}
+                changed={this.nameChangedHandler}
+            />
         }
 
-        const assignClasses = [];
-
-        if (this.state.persons.length <= 2) {
-            assignClasses.push(classes.red);
-        }
-
-        if (this.state.persons.length <= 1) {
-            assignClasses.push(classes.bold);
-        }
-
-        const classtext = assignClasses.join(' ');
-
-
-        let charList = null;
-        if (this.state.text != null && this.state.text.length > 0) {
-            const charArray = this.state.text.split('');
-
-            charList = charArray.map((char, index) => {
-                return <Char char={char} index={index} click={() => this.deleteCharHandler(index)}/>
-            });
-        }
 
         return (
             <div className={classes.App}>
-                <h1>Hi, I'm a react app </h1>
-                <p className={classtext}>it works! </p>
-
-                <input onChange={this.validateTextHandler} value={this.state.text}/>
-                <Validation length={this.state.text.length}/>
-                <div>
-                    {charList}
-                </div>
-                {/*<button className='Button' onClick={() => this.switchNameHandler('Manuelllee')}>Switch Name</button>*/}
-                <button className={btnClass} onClick={this.togglePerson}>Show Person</button>
+                <Cockpit
+                    persons={this.state.persons}
+                    showPersons={this.state.showPersons}
+                    text={this.state.text}
+                    deleted={this.deleteCharHandler}
+                    validate={this.validateTextHandler}
+                    toggle={this.togglePerson}
+                />
                 {persons}
             </div>
         );
