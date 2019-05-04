@@ -9,6 +9,12 @@ import Cockpit from "../components/Cockpit/Cockpit";
 
 class App extends Component {
 
+    //not neeeded though
+    constructor(props) {
+        super(props);
+        console.log('[App.js] constructore')
+    }
+
     state = {
         persons: [
             {id: 'dsds', name: 'Max', age: 29},
@@ -19,6 +25,14 @@ class App extends Component {
         text: ''
     }
 
+    static getDerivedStateFromProps(props, state) {
+        console.log('[App.js] getDervicedStateFromProps', props);
+        return state;
+    }
+
+    componentDidMount() {
+        console.log('[App.js] componentDid Mount');
+    }
 
     nameChangedHandler = (event, id) => {
 
@@ -64,6 +78,8 @@ class App extends Component {
 
     render() {
 
+        console.log('[App.js] render');
+
         let persons = null;
 
         console.log(this.state.showPersons);
@@ -80,6 +96,7 @@ class App extends Component {
         return (
             <div className={classes.App}>
                 <Cockpit
+                    title={this.props.title}
                     persons={this.state.persons}
                     showPersons={this.state.showPersons}
                     text={this.state.text}
