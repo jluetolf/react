@@ -1,10 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 
 import classes from "./Cockpit.css";
 import Chars from "../Chars/Chars";
 
 const Cockpit = (props) => {
+
+    useEffect((create, input) => {
+        console.log('[Cockpit.js] useEffect');
+        //http requesr...
+        setTimeout(() => {
+            //alert('Saved data to cloud');
+        }, 1000);
+
+    }, [props.persons]);
 
 
     let btnClass = null;

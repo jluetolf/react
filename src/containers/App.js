@@ -5,6 +5,7 @@ import classes from './App.css';
 
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
+import WithClass from "../hoc/WithClass";
 
 
 class App extends Component {
@@ -22,7 +23,9 @@ class App extends Component {
             {id: 'dsdsdds', name: 'Stephanie', age: 13},
 
         ],
-        text: ''
+        text: '',
+        showCockpit: true,
+        changeCount: 0
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -33,6 +36,16 @@ class App extends Component {
     componentDidMount() {
         console.log('[App.js] componentDid Mount');
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log('[App.js] shouldComponentUpdate');
+        return true;
+    }
+
+    componentDidUpdate() {
+        console.log('[App.js] componentDidUpdate')
+    }
+
 
     nameChangedHandler = (event, id) => {
 
@@ -47,7 +60,14 @@ class App extends Component {
         const persons = [...this.state.persons];
 
         persons[personIndex] = person;
-        this.setState({persons: persons});
+        // this.setState({persons: persons});
+
+        this.setState((prevState, props) => {
+            return {
+                persons: persons,
+                changeCount: prevState.changeCount + 1
+            }
+        });
 
     }
 
@@ -75,6 +95,12 @@ class App extends Component {
         this.setState({text: newText});
     }
 
+    removeCockpit = () => {
+        const showCockpit = !this.state.showCockpit;
+
+        this.setState({showCockpit: showCockpit});
+    }
+
 
     render() {
 
@@ -92,20 +118,30 @@ class App extends Component {
             />
         }
 
+        let cockpit = null;
+        let cockpitBottonText = 'RemoveCockpit';
+        if (this.state.showCockpit === true) {
+            cockpitBottonText = 'RemoveCockpit';
+            cockpit = <Cockpit
+                title={this.props.title}
+                persons={this.state.persons}
+                showPersons={this.state.showPersons}
+                text={this.state.text}
+                deleted={this.deleteCharHandler}
+                validate={this.validateTextHandler}
+                toggle={this.togglePerson}
+            />
+        } else {
+            cockpitBottonText = 'AddCockpit';
+        }
+
 
         return (
-            <div className={classes.App}>
-                <Cockpit
-                    title={this.props.title}
-                    persons={this.state.persons}
-                    showPersons={this.state.showPersons}
-                    text={this.state.text}
-                    deleted={this.deleteCharHandler}
-                    validate={this.validateTextHandler}
-                    toggle={this.togglePerson}
-                />
+            <WithClass classes={classes.App}>
+                <button onClick={this.removeCockpit}>{cockpitBottonText}</button>
+                {cockpit}
                 {persons}
-            </div>
+            </WithClass>
         );
     }
 }
